@@ -67,12 +67,14 @@ trait Solver extends GameDef {
            explored: Set[Block]): Stream[(Block, List[Move])] = {
     if (initial.isEmpty) Stream.empty
     else {
-      val more = for {
+      lazy val more = for {
         path <- initial
         next <- neighborsWithHistory(path._1, path._2)
         if (next._2.length > path._2.length) && !(explored contains next._1)
       } yield next
-      more #::: from(newNeighborsOnly(more, explored), explored ++ (more map (_._1)))
+      lazy val newStateFrom = newNeighborsOnly(more, explored)
+      lazy val newExplored = explored ++ (more map (_._1))
+      more #::: from(newStateFrom, newExplored)
     }
   }
 
