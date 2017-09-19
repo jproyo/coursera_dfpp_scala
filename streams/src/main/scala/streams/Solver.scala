@@ -69,12 +69,11 @@ trait Solver extends GameDef {
     else {
       lazy val more = for {
         path <- initial
-        next <- neighborsWithHistory(path._1, path._2)
-        if (next._2.length > path._2.length) && !(explored contains next._1)
+        next <- newNeighborsOnly(neighborsWithHistory(path._1, path._2), explored)
+        if (next._2.length > path._2.length)
       } yield next
-      lazy val newStateFrom = newNeighborsOnly(more, explored)
       lazy val newExplored = explored ++ (more map (_._1))
-      more #::: from(newStateFrom, newExplored)
+      more #::: from(more, newExplored)
     }
   }
 
