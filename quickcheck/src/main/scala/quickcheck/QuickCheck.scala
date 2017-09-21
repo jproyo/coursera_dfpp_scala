@@ -135,11 +135,9 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     orderPreserved((l foldRight empty)(insert))
   }
 
-  property("preserve insertion order min ") = forAll { (a: Int) =>
+  property("preserve insertion order with mixed insertion") = forAll { (a: Int) =>
     val b = if (a == Int.MaxValue) a+1 else a
-    val h1 = insert(b+1, insert(b, insert(b+2, empty)))
-    val h2 = deleteMin(h1)
-    h2 == insert(b+2, insert(b+1, empty))
+    deleteMin(insert(b+1, insert(b, insert(b+2, empty)))) == insert(b+2, insert(b+1, empty))
   }
 
   property("preserve insertion order") = forAll { (a: Int, b: Int) =>
